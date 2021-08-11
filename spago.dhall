@@ -16,6 +16,7 @@ to generate this file without the comments in this block.
   , "console"
   , "control"
   , "effect"
+  , "either"
   , "foldable-traversable"
   , "integers"
   , "maybe"
@@ -24,6 +25,8 @@ to generate this file without the comments in this block.
   , "prelude"
   , "psci-support"
   , "strings"
+  , "tuples"
+  , "validation"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
