@@ -15,6 +15,7 @@ import Effect (Effect)
 import Parser (Parser(..), runParser)
 import Passport (BirthYear(..), CountryId(..), ExpirationYear(..), EyeColor(..), HairColor(..), Height(..), IssueYear(..), Passport, PassportId(..), passport)
 import ReadFile (readInput)
+import Validation (Errors, matches, rangeIs)
 
 birthYearRegex :: Regex
 birthYearRegex = unsafeRegex "(byr):([0-9]+)" noFlags
@@ -95,21 +96,6 @@ parsePassport input =
     <*> parseEyeColor input
     <*> (PassportId <$> parseFieldValueAtByRe 2 passportIdRegex input)
     <*> (Just $ CountryId <$> (fromString =<< parseFieldValueAtByRe 2 countryIdRegex input))
-
-type Errors
-  = Array String
-
-rangeIs :: String -> Int -> Int -> Int -> V Errors Int
-rangeIs field start end value
-  | value < start || end < value = invalid [ "Field '" <> field <> "' must be within " <> show start <> " and " <> show end <> "." ]
-
-rangeIs _ _ _ value = pure value
-
-matches :: String -> Regex -> String -> V Errors String
-matches _ regex value
-  | test regex value = pure value
-
-matches field _ _ = invalid [ "Field '" <> field <> "' did not match the required format." ]
 
 validateBirthYear :: BirthYear -> V Errors BirthYear
 validateBirthYear (BirthYear byr) = BirthYear <$> rangeIs "Birth year" 1920 2002 byr
