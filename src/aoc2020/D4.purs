@@ -9,7 +9,7 @@ import Data.String (Pattern(..), split)
 import Data.String.Regex (Regex, match)
 import Data.String.Regex.Flags (noFlags)
 import Data.String.Regex.Unsafe (unsafeRegex)
-import Data.Traversable (traverse)
+import Data.Traversable (sequence)
 import Data.Validation.Semigroup (V, invalid, isValid)
 import Effect (Effect)
 import Parser (Parser(..), runParser)
@@ -54,7 +54,7 @@ anyField :: Regex -> Parser (Maybe (Array String))
 anyField re =
   Parser
     ( \s -> case match re s of
-        Just (NonEmptyArray kv) -> Just (traverse identity kv)
+        Just (NonEmptyArray kv) -> Just (sequence kv)
         Nothing -> Nothing
     )
 
@@ -154,4 +154,4 @@ part1 = do
 part2 :: Effect String
 part2 = do
   input <- readInput "./src/aoc2020/input/d4"
-  pure $ show $ length $ filter isValid $ validatePassport <$> (fromMaybe [] $ traverse identity $ filter isJust $ (parsePassport <$> split (Pattern "\n\n") input))
+  pure $ show $ length $ filter isValid $ validatePassport <$> (fromMaybe [] $ sequence $ filter isJust $ (parsePassport <$> split (Pattern "\n\n") input))
