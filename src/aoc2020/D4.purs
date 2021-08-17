@@ -59,10 +59,7 @@ anyField re =
     )
 
 extractValueAt :: Int -> Maybe (Array String) -> Maybe String
-extractValueAt idx arr = do
-  arr' <- arr
-  v <- arr' !! idx
-  pure v
+extractValueAt = (=<<) <<< flip (!!)
 
 parseFieldValueAtByRe :: Int -> Regex -> String -> Maybe String
 parseFieldValueAtByRe idx regex s = identity =<< runParser (extractValueAt idx <$> anyField regex) s
